@@ -1,8 +1,8 @@
 //server এর সাথে যত connection দরকার সবকিছু এখানে থাকবে।
 
-import config from "./app/config";
-import mongoose from "mongoose";
-import app from "./app";
+import config from './app/config';
+import mongoose from 'mongoose';
+import app from './app';
 
 async function main() {
   try {

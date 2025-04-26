@@ -16,8 +16,23 @@
 - typescript require syntax support করে না তাই এর জন্য @types/node package install করতে হবে।
   `npm i --save-dev @types/node`
 - typescript কে express এর type বুঝানোর জন্য @types/express package install করতে হবে।
-  `npm i --save-dev @types/express`
+
+  ```
+  npm i --save-dev @types/express
+  ```
 
 - [eslint and Prettier setup](https://blog.logrocket.com/linting-typescript-eslint-prettier/)
+
+- typescript server সরাসরি run করার জন্য ts-node-dev package use করতে হবে
+
+  ```
+  npm i ts-node-dev --save-dev
+  ```
+
+  run command:
+
+  ```
+  ts-node-dev --respawn --transpile-only src/server.ts
+  ```
 
 ---
