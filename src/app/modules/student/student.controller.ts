@@ -1,6 +1,7 @@
 //controller function handle only request and response
 import { Request, Response } from 'express';
 import { StudentServices } from './student.services';
+import Joi from 'joi';
 
 const getAllStudents = async (req: Request, res: Response) => {
   try {
@@ -35,6 +36,18 @@ const getSingleStudent = async (req: Request, res: Response) => {
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;
+
+    // Schema Validation with joi validator package
+    // joi যেহেতু নিজেই একটি schema create করে তাই এটাকে controller এর মধ্যে handle করতে হবে।
+
+    const StudentSchemaValidatorWithJoi = Joi.object({
+      name: {
+        firstName: Joi.string().max(20).required(),
+        middleName: Joi.string().max(20),
+        lastName: Joi.string().max(20).required(),
+      },
+      gender: Joi.string().valid(['male', 'female', 'other']), //joi package এ enum valid() method এর মধ্যে define করতে হয়।
+    });
 
     const result = await StudentServices.studentCreateIntoDB(studentData);
 

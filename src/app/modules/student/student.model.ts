@@ -5,6 +5,7 @@ import {
   Student,
   Username,
 } from './student.interface';
+import validator from 'validator';
 
 const userNameSchema = new Schema<Username>({
   firstName: {
@@ -35,6 +36,10 @@ const userNameSchema = new Schema<Username>({
     require: [true, 'last name is required '],
     trim: true,
     maxlength: [15, 'last name max length is 15'],
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: '{VALUE} is not valid',
+    },
   },
 });
 
@@ -60,7 +65,13 @@ const studentSchema = new Schema<Student>({
     type: userNameSchema,
     required: [true, 'Name is required'], //mongoose এ required field validation message pass করা যায়। যদি field না পাঠানো হয় তাহলে error message show করবে ।
   },
-  email: { type: String, required: true, unique: true, trim: true }, // unique হলো এই field value unique হতে হবে, duplicate হবে পারবে না। field unique করলে auto indexing হয়ে যায়।
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    validate: { validator: (value: string) => validator.isEmail(value) },
+  }, // unique হলো এই field value unique হতে হবে, duplicate হবে পারবে না। field unique করলে auto indexing হয়ে যায়।
   gender: {
     type: String,
     enum: {
