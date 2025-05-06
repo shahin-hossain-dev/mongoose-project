@@ -1,7 +1,8 @@
 //controller function handle only request and response
 import { Request, Response } from 'express';
 import { StudentServices } from './student.services';
-import StudentValidationSchemaWithJoi from './student.validation';
+// import StudentValidationSchemaWithJoi from './student.joi.validation';
+import studentValidationSchema from './student.validation';
 
 const getAllStudents = async (req: Request, res: Response) => {
   try {
@@ -37,22 +38,28 @@ const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;
 
-    // Schema Validation with joi validator package
+    //* Schema Validation with joi validator library
     // joi যেহেতু নিজেই একটি schema create করে তাই এটাকে controller এর মধ্যে handle করতে হবে।
 
-    const { error } = StudentValidationSchemaWithJoi.validate(studentData); //return {error, value}
+    // const { error } = StudentValidationSchemaWithJoi.validate(studentData); //return {error, value}
 
     // console.log({ error });
 
-    if (error) {
+    /*  if (error) {
       res.status(500).json({
         success: false,
         message: 'something went wrong',
         error: error.details,
       });
-    }
+    } */
 
-    const result = await StudentServices.studentCreateIntoDB(studentData);
+    //* data validation schema using zod library
+    //typescript এর সাথে zod popular validation library
+
+    const studentValidatedData = studentValidationSchema.parse(studentData);
+
+    const result =
+      await StudentServices.studentCreateIntoDB(studentValidatedData);
 
     res.status(200).json({
       success: true,
