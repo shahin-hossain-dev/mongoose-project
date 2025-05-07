@@ -12,9 +12,13 @@ const getSingleStudentFromDB = async (id: string) => {
   return student;
 };
 
-const studentCreateIntoDB = async (student: Student) => {
+const studentCreateIntoDB = async (studentData: Student) => {
   // create method দিয়ে mongoose এ data insert করা হয়।
-  const result = await StudentModel.create(student);
+  // const result = await StudentModel.create(studentData); //build in static method
+
+  //*build in instance method
+  const student = new StudentModel(studentData);
+  const result = await student.save();
   return result;
 };
 
@@ -23,3 +27,18 @@ export const StudentServices = {
   getAllStudentFromDB,
   getSingleStudentFromDB,
 };
+
+//!class কে দুই ভাবে access করা যায়---------------------------------
+
+class Counter {
+  static count: number = 0;
+
+  static increment = () => {}; //static
+  decrement = () => {}; //instance
+}
+
+//Counter.increment(); // এটা হলো  static method
+
+//এটা হলো instance method
+const counter1 = new Counter();
+counter1.decrement();
