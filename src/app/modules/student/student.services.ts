@@ -1,23 +1,28 @@
-import { Student } from './student.interface';
-import { StudentModel } from './student.model';
+import { TStudent } from './student.interface';
+import { Student } from './student.model';
 
 const getAllStudentFromDB = async () => {
-  const result = await StudentModel.find();
+  const result = await Student.find();
 
   return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const student = await StudentModel.findOne({ id });
+  const student = await Student.findOne({ id });
   return student;
 };
 
-const studentCreateIntoDB = async (studentData: Student) => {
+const studentCreateIntoDB = async (studentData: TStudent) => {
   // create method দিয়ে mongoose এ data insert করা হয়।
-  // const result = await StudentModel.create(studentData); //build in static method
+  // const result = await Student.create(studentData); //build in static method to create a new student
 
-  //*build in instance method
-  const student = new StudentModel(studentData);
+  const student = new Student(studentData); // create mongoose instance
+
+  if (await student.isUserExist(studentData.id)) {
+    throw new Error('Student Already Exists');
+  }
+
+  //*mongoose build in instance method to create a student in database
   const result = await student.save();
   return result;
 };

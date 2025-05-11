@@ -1,13 +1,15 @@
 import { model, Schema } from 'mongoose';
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  Username,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  StudentMethod,
+  StudentModel,
+  TUsername,
 } from './student.interface';
 import validator from 'validator';
 
-const userNameSchema = new Schema<Username>({
+const userNameSchema = new Schema<TUsername>({
   firstName: {
     type: String,
     require: [true, 'First name is required'], //mongoose এ required field validation message pass করা যায়। যদি field না পাঠানো হয় তাহলে error message show করবে ।
@@ -43,7 +45,7 @@ const userNameSchema = new Schema<Username>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: { type: String, trim: true },
   fatherContactNo: { type: String, trim: true },
   fatherOccupation: { type: String, trim: true },
@@ -52,14 +54,14 @@ const guardianSchema = new Schema<Guardian>({
   motherOccupation: { type: String, trim: true },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, trim: true },
   contactNo: { type: String, trim: true },
   occupation: { type: String, trim: true },
   address: { type: String, trim: true },
 });
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
   id: { type: String, required: true, unique: true }, // unique হলো এই field value unique হতে হবে, duplicate হবে পারবে না। field unique করলে auto indexing হয়ে যায়।
   name: {
     type: userNameSchema,
@@ -116,4 +118,11 @@ const studentSchema = new Schema<Student>({
   profileImg: { type: String },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+// isUserExist method এর মধ্যে একটি async function set করা হলো user exist কিনা পাওয়ার জন্য।
+studentSchema.methods.isUserExist = async function (id: string) {
+  const isUserExist = Student.findOne({ id });
+
+  return isUserExist; //return student or null
+};
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema); //student mongoose model

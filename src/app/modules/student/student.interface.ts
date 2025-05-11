@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 
-export type Guardian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -9,22 +9,22 @@ export type Guardian = {
   motherContactNo: string;
 };
 
-export type Username = {
+export type TUsername = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
 
-export type LocalGuardian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: Username;
+  name: TUsername;
   email: string;
   gender: 'male' | 'female';
   dateOfBirth?: string;
@@ -33,14 +33,21 @@ export type Student = {
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
 
+//type: checking isExist student by id
+//student schema এর মধ্যে student method গুলো পাওয়ার জন্য এখানে studentMethod গুলো declare করা হচ্ছে
 export type StudentMethod = {
-  isUserExist: (id: string) => Promise<Student>;
+  isUserExist: (id: string) => Promise<TStudent | null>;
 };
 
-export type StudentModel = Model<Student, Record<string, never>, StudentMethod>;
+//type: create student model type
+export type StudentModel = Model<
+  TStudent,
+  Record<string, never>,
+  StudentMethod
+>;
