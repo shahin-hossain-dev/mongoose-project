@@ -13,17 +13,24 @@ const getSingleStudentFromDB = async (id: string) => {
 };
 
 const studentCreateIntoDB = async (studentData: TStudent) => {
-  // create method দিয়ে mongoose এ data insert করা হয়।
-  // const result = await Student.create(studentData); //build in static method to create a new student
+  if (await Student.isUserExist(studentData.id)) {
+    throw Error('User already exist');
+  }
 
-  const student = new Student(studentData); // create mongoose instance
+  // create method দিয়ে mongoose এ data insert করা হয়।
+  const result = await Student.create(studentData); //build in static method to create a new student
+
+  //* এখানে mongoose instance use করে customs instance method (isUserExist) যুক্ত করে operation করা হয়েছে।
+  /*
+ const student = new Student(studentData); // create mongoose instance
 
   if (await student.isUserExist(studentData.id)) {
     throw new Error('Student Already Exists');
   }
 
   //*mongoose build in instance method to create a student in database
-  const result = await student.save();
+  const result = await student.save(); 
+  */
   return result;
 };
 

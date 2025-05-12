@@ -39,8 +39,10 @@ export type TStudent = {
   isActive: 'active' | 'blocked';
 };
 
+//* এখানে mongoose custom instance method type declare করা হয়েছে।
 //type: checking isExist student by id
-//student schema এর মধ্যে student method গুলো পাওয়ার জন্য এখানে studentMethod গুলো declare করা হচ্ছে
+//*student schema এর মধ্যে student method গুলো পাওয়ার জন্য এখানে studentMethod গুলো declare করা হচ্ছে
+/* 
 export type StudentMethod = {
   isUserExist: (id: string) => Promise<TStudent | null>;
 };
@@ -51,3 +53,10 @@ export type StudentModel = Model<
   Record<string, never>,
   StudentMethod
 >;
+ */
+
+//* এখানে mongoose custom static method type declare করা হয়েছে
+
+export interface StudentModel extends Model<TStudent> {
+  isUserExist(id: string): Promise<TStudent | null>;
+}

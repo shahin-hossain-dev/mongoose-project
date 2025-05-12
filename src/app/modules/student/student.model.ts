@@ -1,10 +1,9 @@
 import { model, Schema } from 'mongoose';
 import {
+  StudentModel,
   TGuardian,
   TLocalGuardian,
   TStudent,
-  StudentMethod,
-  StudentModel,
   TUsername,
 } from './student.interface';
 import validator from 'validator';
@@ -61,7 +60,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   address: { type: String, trim: true },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
+const studentSchema = new Schema<TStudent, StudentModel>({
   id: { type: String, required: true, unique: true }, // unique হলো এই field value unique হতে হবে, duplicate হবে পারবে না। field unique করলে auto indexing হয়ে যায়।
   name: {
     type: userNameSchema,
@@ -118,7 +117,9 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
   profileImg: { type: String },
 });
 
-// isUserExist method এর মধ্যে একটি async function set করা হলো user exist কিনা পাওয়ার জন্য।
+//crate custom instance method
+//*custom instance method দিয়ে isUserExist method এর মধ্যে একটি async function set করা হলো user exist কিনা পাওয়ার জন্য।
+/*  
 studentSchema.methods.isUserExist = async function (id: string) {
   const isUserExist = Student.findOne({ id });
 
@@ -126,3 +127,15 @@ studentSchema.methods.isUserExist = async function (id: string) {
 };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema); //student mongoose model
+*/
+
+// create a custom static method
+//*custom static method দিয়ে isUserExist method এর মধ্যে একটি async function set করা হলো user exist কিনা পাওয়ার জন্য।
+
+studentSchema.statics.isUserExist = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+
+  return existingUser;
+};
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);
