@@ -13,6 +13,7 @@ const getSingleStudentFromDB = async (id: string) => {
 };
 
 const studentCreateIntoDB = async (studentData: TStudent) => {
+  //* এখানে mongoose static method use করে custom method (isUserExist) কে যুক্ত করে operation করা হয়েছে।
   if (await Student.isUserExist(studentData.id)) {
     throw Error('User already exist');
   }

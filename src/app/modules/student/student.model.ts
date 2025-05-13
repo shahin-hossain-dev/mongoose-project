@@ -7,6 +7,8 @@ import {
   TUsername,
 } from './student.interface';
 import validator from 'validator';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -66,6 +68,13 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     type: userNameSchema,
     required: [true, 'Name is required'], //mongoose এ required field validation message pass করা যায়। যদি field না পাঠানো হয় তাহলে error message show করবে ।
   },
+  password: {
+    type: String,
+    required: [true, 'password is required'],
+    unique: true,
+    trim: true,
+    maxlength: [20, 'password can not be more than 20'],
+  },
   email: {
     type: String,
     required: true,
@@ -115,6 +124,28 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   },
   localGuardian: localGuardianSchema,
   profileImg: { type: String },
+});
+
+//mongoose middleware
+
+//pre middleware -> pre middleware data save হওয়ার আগে কাজ করবে
+
+studentSchema.pre('save', async function (next) {
+  //console.log(this, 'Pre Hook: It works before save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const student = this;
+
+  //password hashing and save to db
+  student.password = await bcrypt.hash(
+    student.password,
+    Number(config.password_salt_rounds),
+  );
+  next();
+});
+
+//post middleware -> post middleware data save হওয়ার পরে কাজ করবে
+studentSchema.post('save', function () {
+  console.log(this, 'Post Hook: It works after save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
 });
 
 //crate custom instance method
