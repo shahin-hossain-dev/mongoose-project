@@ -38,6 +38,7 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: 'active' | 'blocked';
+  isDeleted: boolean;
 };
 
 //* এখানে mongoose custom instance method type declare করা হয়েছে।

@@ -71,7 +71,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   password: {
     type: String,
     required: [true, 'password is required'],
-    unique: true,
     trim: true,
     maxlength: [20, 'password can not be more than 20'],
   },
@@ -124,9 +123,15 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   },
   localGuardian: localGuardianSchema,
   profileImg: { type: String },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-//mongoose middleware
+//!mongoose middleware
+
+//?Document Middleware
 
 //pre middleware -> pre middleware data save হওয়ার আগে কাজ করবে
 
@@ -144,8 +149,25 @@ studentSchema.pre('save', async function (next) {
 });
 
 //post middleware -> post middleware data save হওয়ার পরে কাজ করবে
-studentSchema.post('save', function () {
-  console.log(this, 'Post Hook: It works after save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
+studentSchema.post('save', function (updatedDoc, next) {
+  //console.log(this, 'Post Hook: It works after save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
+  updatedDoc.password = '';
+  next();
+});
+
+//? Query Middleware
+//query middleware হলো যখন query করা হবে query হওয়ার আগে এবং পরে middleware এর সাহায্যে বিভিন্ন অপারেশন করা
+studentSchema.pre('find', function (next) {
+  //query: যে data গুলো deleted না সেগুলো পাবে। $ne = not equal
+  this.find({ isDeleted: { $ne: true } }); //এখানে this হলো যে data গুলো find করে পাবে সব this এর মধ্যে থাকবে
+
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
+
+  next();
 });
 
 //crate custom instance method

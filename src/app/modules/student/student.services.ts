@@ -9,6 +9,7 @@ const getAllStudentFromDB = async () => {
 
 const getSingleStudentFromDB = async (id: string) => {
   const student = await Student.findOne({ id });
+  // const student = await Student.aggregate([{ $match: { id } }]);
   return student;
 };
 
@@ -35,10 +36,16 @@ const studentCreateIntoDB = async (studentData: TStudent) => {
   return result;
 };
 
+const deleteStudentFromDB = async (id: string) => {
+  const result = await Student.updateOne({ id: id }, { isDeleted: true });
+  return result;
+};
+
 export const StudentServices = {
   studentCreateIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,
+  deleteStudentFromDB,
 };
 
 //!class কে দুই ভাবে access করা যায়---------------------------------
