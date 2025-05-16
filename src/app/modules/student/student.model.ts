@@ -170,6 +170,15 @@ studentSchema.pre('findOne', function (next) {
   next();
 });
 
+studentSchema.pre('aggregate', function (next) {
+  // console.log(this.pipeline()); //[ { '$match': { id: 'STU12351' } } ] //* this.pipeline() এর pipeline পাওয়া যাবে।
+  //এখন service এ pipeline এ যে $match method define করা হয়েছে তার আগে যদি আরেকটা pipeline use match use করা যায় তাহলে deleted গুলো ignore করা যাবে।
+
+  //like this: [ {$match: {isDeleted: {$ne: true}}}, { '$match': { id: 'STU12351' } } ]
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } }); // unshift method use করে new $match logic কে প্রথমে inject করে দেয়া হয়েছে।
+  next();
+});
+
 //crate custom instance method
 //*custom instance method দিয়ে isUserExist method এর মধ্যে একটি async function set করা হলো user exist কিনা পাওয়ার জন্য।
 /*  
