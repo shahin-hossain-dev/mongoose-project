@@ -39,6 +39,7 @@ export type TStudent = {
   profileImg?: string;
   isActive: 'active' | 'blocked';
   isDeleted: boolean;
+  // fullName?: string;
 };
 
 //* এখানে mongoose custom instance method type declare করা হয়েছে।
