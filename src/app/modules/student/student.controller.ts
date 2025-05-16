@@ -102,9 +102,32 @@ const deleteStudent = async (req: Request, res: Response) => {
   }
 };
 
+const updateStudent = async (req: Request, res: Response) => {
+  try {
+    const studentId = req.params.studentId;
+    const updatedDoc = req.body;
+
+    const result = await StudentServices.updateStudentInDB(
+      studentId,
+      updatedDoc,
+    );
+    res.status(201).json({
+      success: true,
+      message: 'Document Update Successfully',
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Something Went Wrong',
+    });
+  }
+};
+
 export const StudentControllers = {
   createStudent,
   getAllStudents,
   getSingleStudent,
   deleteStudent,
+  updateStudent,
 };

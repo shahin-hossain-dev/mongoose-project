@@ -41,11 +41,18 @@ const deleteStudentFromDB = async (id: string) => {
   return result;
 };
 
+const updateStudentInDB = async (id: string, updatedDoc: any) => {
+  const result = await Student.updateOne({ id }, updatedDoc);
+
+  return result;
+};
+
 export const StudentServices = {
   studentCreateIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,
   deleteStudentFromDB,
+  updateStudentInDB,
 };
 
 //!class কে দুই ভাবে access করা যায়---------------------------------
