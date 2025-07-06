@@ -3,17 +3,17 @@ import { UserServices } from './user.services';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    const { password, student: studentInfo } = req.body;
+    const { password, student: studentData } = req.body;
 
     // const validStudent = studentValidationSchema.parse(student);
     const result = await UserServices.createStudentIntoDB(
       password,
-      studentInfo,
+      studentData,
     );
     res.status(201).json({
       success: true,
       message: 'Student Successfully Created',
-      data: '',
+      data: result,
     });
   } catch (error: any) {
     console.log(error);

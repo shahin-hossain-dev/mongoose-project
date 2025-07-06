@@ -42,6 +42,7 @@ const getSingleStudent = async (req: Request, res: Response) => {
   }
 };
 
+//crete student handle in user now it is invalid
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;

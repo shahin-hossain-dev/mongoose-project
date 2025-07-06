@@ -1,32 +1,38 @@
 import config from '../../config';
 import { TStudent } from '../student/student.interface';
-import { TNewUser } from './user.interface';
+import { Student } from '../student/student.model';
+import { TUser } from './user.interface';
 import { User } from './user.model';
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   try {
     //create a new user
-
-    const user: TNewUser = {};
+    // Partial key use করে TUser কে বা type কে Optionally use করা যায়।
+    const userData: Partial<TUser> = {};
 
     // if password not given, set default password
 
-    user.password = password || (config.default_password as string);
+    userData.password = password || (config.default_password as string);
 
-    user.role = 'student';
+    userData.role = 'student';
     // set manually generated
-    user.id = '2025370001';
+    userData.id = '2025370001';
 
     //crate a user
-    const result = await User.create(user);
+    const newUser = await User.create(userData);
 
     //create a student
 
-    if (Object.keys(result).length) {
-      studentData.id = result.id;
-      studentData.user = result._id;
+    if (Object.keys(newUser).length) {
+      studentData.id = newUser.id;
+      studentData.user = newUser._id; //reference id
+
+      const newStudent = await Student.create(studentData);
+
+      return newStudent;
     }
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message);
     throw Error('Something Went Wrong');
   }
 };

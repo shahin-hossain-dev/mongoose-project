@@ -65,6 +65,13 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true }, // unique হলো এই field value unique হতে হবে, duplicate হবে পারবে না। field unique করলে auto indexing হয়ে যায়।
+
+    user: {
+      type: Schema.Types.ObjectId, //Object id এর type, model এর মধ্যে define করতে হলে Schema.Type.ObjectId use করতে হয়।
+      required: [true, 'userId is required'],
+      unique: true,
+      ref: 'User', // connection with User Collection
+    },
     name: {
       type: userNameSchema,
       required: [true, 'Name is required'], //mongoose এ required field validation message pass করা যায়। যদি field না পাঠানো হয় তাহলে error message show করবে ।
@@ -100,14 +107,14 @@ const studentSchema = new Schema<TStudent, StudentModel>(
         message: '{VALUE} is not valid',
       },
     },
-    isActive: {
-      type: String,
-      enum: {
-        values: ['active', 'blocked'],
-        message: '{VALUE} is not supported',
-      },
-      default: 'active', // default হিসাবে active থাকবে
-    },
+    // isActive: {
+    //   type: String,
+    //   enum: {
+    //     values: ['active', 'blocked'],
+    //     message: '{VALUE} is not supported',
+    //   },
+    //   default: 'active', // default হিসাবে active থাকবে
+    // },
     presentAddress: {
       type: String,
       required: [true, 'Present address is required'],
