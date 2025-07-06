@@ -1,3 +1,4 @@
+import { NextFunction } from 'express';
 import config from '../../config';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
@@ -33,7 +34,7 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     }
   } catch (error: any) {
     console.log(error.message);
-    throw Error('Something Went Wrong');
+    throw Error(error.message);
   }
 };
 

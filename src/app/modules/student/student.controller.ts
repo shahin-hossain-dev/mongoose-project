@@ -1,10 +1,14 @@
 //controller function handle only request and response
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.services';
 // import StudentValidationSchemaWithJoi from './student.joi.validation';
 import studentValidationSchema from './student.validation';
 
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const students = await StudentServices.getAllStudentFromDB();
 
@@ -13,16 +17,17 @@ const getAllStudents = async (req: Request, res: Response) => {
       message: 'get student data successfully',
       data: students,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'something went wrong',
-      error: error,
-    });
+  } catch (error) {
+    //error send to globalErrorHandler
+    next(error);
   }
 };
 
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params;
 
@@ -33,16 +38,13 @@ const getSingleStudent = async (req: Request, res: Response) => {
       message: 'get student successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something went wrong',
-      error: error,
-    });
+  } catch (error) {
+    //error send to globalErrorHandler
+    next(error);
   }
 };
 
-//crete student handle in user now it is invalid
+//create student handle in user now it is invalid
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;
@@ -84,7 +86,11 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
-const deleteStudent = async (req: Request, res: Response) => {
+const deleteStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { studentId } = req.params;
     const result = await StudentServices.deleteStudentFromDB(studentId);
@@ -94,16 +100,17 @@ const deleteStudent = async (req: Request, res: Response) => {
       message: 'Student has been Deleted',
       data: result,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something went wrong',
-      error: error,
-    });
+  } catch (error) {
+    //error send to globalErrorHandler
+    next(error);
   }
 };
 
-const updateStudent = async (req: Request, res: Response) => {
+const updateStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const studentId = req.params.studentId;
     const updatedDoc = req.body;
@@ -117,11 +124,9 @@ const updateStudent = async (req: Request, res: Response) => {
       message: 'Document Update Successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Something Went Wrong',
-    });
+  } catch (error) {
+    //error send to globalErrorHandler
+    next(error);
   }
 };
 

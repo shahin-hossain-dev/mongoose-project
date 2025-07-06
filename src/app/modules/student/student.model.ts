@@ -76,12 +76,13 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: userNameSchema,
       required: [true, 'Name is required'], //mongoose এ required field validation message pass করা যায়। যদি field না পাঠানো হয় তাহলে error message show করবে ।
     },
-    password: {
-      type: String,
-      required: [true, 'password is required'],
-      trim: true,
-      maxlength: [20, 'password can not be more than 20'],
-    },
+    // password not necessary here, we transfer it to users collection
+    // password: {
+    //   type: String,
+    //   required: [true, 'password is required'],
+    //   trim: true,
+    //   maxlength: [20, 'password can not be more than 20'],
+    // },
     email: {
       type: String,
       required: true,
@@ -107,6 +108,8 @@ const studentSchema = new Schema<TStudent, StudentModel>(
         message: '{VALUE} is not valid',
       },
     },
+
+    //isActive not necessary here, we transfer it to users collection
     // isActive: {
     //   type: String,
     //   enum: {
@@ -153,7 +156,7 @@ studentSchema.virtual('fullName').get(function () {
 
 //pre middleware -> pre middleware data save হওয়ার আগে কাজ করবে
 
-studentSchema.pre('save', async function (next) {
+/* studentSchema.pre('save', async function (next) {
   //console.log(this, 'Pre Hook: It works before save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const student = this;
@@ -171,7 +174,7 @@ studentSchema.post('save', function (updatedDoc, next) {
   //console.log(this, 'Post Hook: It works after save the data'); //এখানে this keyword দিয়ে data/document টাকে পাওয়া যাবে।
   updatedDoc.password = '';
   next();
-});
+}); */
 
 //? Query Middleware
 //query middleware হলো যখন query করা হবে query হওয়ার আগে এবং পরে middleware এর সাহায্যে বিভিন্ন অপারেশন করা
