@@ -2,9 +2,14 @@ import { TStudent } from './student.interface';
 import { Student } from './student.model';
 
 const getAllStudentFromDB = async () => {
-  const result = await Student.find();
+  try {
+    const result = await Student.find();
 
-  return result;
+    return result;
+  } catch (error: any) {
+    throw Error(error.message);
+    console.log(error);
+  }
 };
 
 const getSingleStudentFromDB = async (id: string) => {
