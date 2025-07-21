@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.services';
 // import StudentValidationSchemaWithJoi from './student.joi.validation';
 import studentValidationSchema from './student.validation';
+import sendResponse from '../../utils/sendResponse';
+import status from 'http-status';
 
 const getAllStudents = async (
   req: Request,
@@ -33,9 +35,16 @@ const getSingleStudent = async (
 
     const result = await StudentServices.getSingleStudentFromDB(studentId);
 
-    res.status(200).json({
+    // res.status(200).json({
+    //   success: true,
+    //   message: 'get student successfully',
+    //   data: result,
+    // });
+
+    sendResponse(res, {
+      statusCode: status.OK,
       success: true,
-      message: 'get student successfully',
+      message: 'Get student Successfully',
       data: result,
     });
   } catch (error) {
@@ -95,7 +104,14 @@ const deleteStudent = async (
     const { studentId } = req.params;
     const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    res.status(201).json({
+    // res.status(201).json({
+    //   success: true,
+    //   message: 'Student has been Deleted',
+    //   data: result,
+    // });
+
+    sendResponse(res, {
+      statusCode: status.CREATED,
       success: true,
       message: 'Student has been Deleted',
       data: result,
@@ -119,9 +135,15 @@ const updateStudent = async (
       studentId,
       updatedDoc,
     );
-    res.status(201).json({
+    // res.status(201).json({
+    //   success: true,
+    //   message: 'Document Update Successfully',
+    //   data: result,
+    // });
+    sendResponse(res, {
+      statusCode: status.CREATED,
       success: true,
-      message: 'Document Update Successfully',
+      message: 'Document Updated Successfully',
       data: result,
     });
   } catch (error) {
