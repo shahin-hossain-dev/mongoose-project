@@ -1,5 +1,5 @@
 //controller function handle only request and response
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.services';
 // import StudentValidationSchemaWithJoi from './student.joi.validation';
 import studentValidationSchema from './student.validation';
@@ -25,33 +25,40 @@ const getAllStudents = async (
   }
 };
 
-const getSingleStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { studentId } = req.params;
+//req, res, next ৩টা type এক সাথে define করার জন্য express এর built in RequestHandler type function আছে।
+// তাহলে আলাদা আলাদা করে parameter type দিতে হবে না।
 
-    const result = await StudentServices.getSingleStudentFromDB(studentId);
+//catchAsync Higher Order function
+// এ function use করা হবে try-catch block repeatation কমানের জন্য
 
-    // res.status(200).json({
-    //   success: true,
-    //   message: 'get student successfully',
-    //   data: result,
-    // });
-
-    sendResponse(res, {
-      statusCode: status.OK,
-      success: true,
-      message: 'Get student Successfully',
-      data: result,
-    });
-  } catch (error) {
-    //error send to globalErrorHandler
-    next(error);
-  }
+const catchAsync = (fn: RequestHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  };
 };
+
+const getSingleStudent = catchAsync(async (req, res, next) => {
+  // try {
+  const { studentId } = req.params;
+  const result = await StudentServices.getSingleStudentFromDB(studentId);
+
+  // res.status(200).json({
+  //   success: true,
+  //   message: 'get student successfully',
+  //   data: result,
+  // });
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: 'Get student Successfully',
+    data: result,
+  });
+  // } catch (error) {
+  //   //error send to globalErrorHandler
+  //   next(error);
+  // }
+});
 
 //create student handle in user now it is invalid
 const createStudent = async (req: Request, res: Response) => {
@@ -95,11 +102,7 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
-const deleteStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const deleteStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params;
     const result = await StudentServices.deleteStudentFromDB(studentId);
@@ -122,11 +125,7 @@ const deleteStudent = async (
   }
 };
 
-const updateStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const updateStudent: RequestHandler = async (req, res, next) => {
   try {
     const studentId = req.params.studentId;
     const updatedDoc = req.body;
