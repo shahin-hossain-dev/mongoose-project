@@ -98,7 +98,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       }, // এখানে ['male', 'female'] কে mongoose ename type বলে। male অথবা female যেকোনো একটা বসবে, union type এর মতো।
       required: true,
     },
-    dateOfBirth: { type: String },
+    dateOfBirth: { type: Date },
     contactNo: { type: String, required: [true, 'contact no is required'] },
     emergencyContactNo: { type: String },
     bloodGroup: {
