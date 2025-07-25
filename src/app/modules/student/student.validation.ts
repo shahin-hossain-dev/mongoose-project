@@ -50,40 +50,42 @@ const localGuardianValidationSchema = z.object({
 });
 
 // 🔹 Main Student Schema
-const studentValidationSchema = z.object({
-  id: z.string().min(1, 'Student ID is required'),
+const createStudentValidationSchema = z.object({
+  body: z.object({
+    // id: z.string().min(1, 'Student ID is required'),
+    student: z.object({
+      name: userNameValidationSchema,
+      password: z.string().max(20),
 
-  name: userNameValidationSchema,
-  password: z.string().max(20),
+      email: z.string().email('Email must be valid'),
 
-  email: z.string().email('Email must be valid'),
+      gender: z.enum(['male', 'female'], {
+        errorMap: () => ({ message: 'Gender must be male or female' }),
+      }),
 
-  gender: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Gender must be male or female' }),
+      dateOfBirth: z.string().optional(),
+
+      contactNo: z.string().min(1, 'Contact number is required').trim(),
+
+      emergencyContactNo: z.string().optional(),
+
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+
+      presentAddress: z.string().min(1, 'Present address is required'),
+
+      permanentAddress: z.string().min(1, 'Permanent address is required'),
+
+      guardian: guardianValidationSchema,
+
+      localGuardian: localGuardianValidationSchema,
+
+      profileImg: z.string().optional(),
+      // isActive: z.enum(['active', 'blocked']).default('active'),
+      // isDeleted: z.boolean().default(false),
+    }),
   }),
-
-  dateOfBirth: z.string().optional(),
-
-  contactNo: z.string().min(1, 'Contact number is required').trim(),
-
-  emergencyContactNo: z.string().optional(),
-
-  bloodGroup: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional(),
-
-  isActive: z.enum(['active', 'blocked']).default('active'),
-
-  presentAddress: z.string().min(1, 'Present address is required'),
-
-  permanentAddress: z.string().min(1, 'Permanent address is required'),
-
-  guardian: guardianValidationSchema,
-
-  localGuardian: localGuardianValidationSchema,
-
-  profileImg: z.string().optional(),
-  isDeleted: z.boolean().default(false),
 });
 
-export default studentValidationSchema;
+export const studentValidation = { createStudentValidationSchema };

@@ -1,43 +1,23 @@
 //controller function handle only request and response
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { Request, Response } from 'express';
 import { StudentServices } from './student.services';
 // import StudentValidationSchemaWithJoi from './student.joi.validation';
 import studentValidationSchema from './student.validation';
 import sendResponse from '../../utils/sendResponse';
 import status from 'http-status';
+import catchAsync from '../../utils/catchAsync';
 
-const getAllStudents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const students = await StudentServices.getAllStudentFromDB();
+const getAllStudents = catchAsync(async (req, res) => {
+  const students = await StudentServices.getAllStudentFromDB();
 
-    res.status(200).json({
-      success: true,
-      message: 'get student data successfully',
-      data: students,
-    });
-  } catch (error) {
-    //error send to globalErrorHandler
-    next(error);
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: 'get student data successfully',
+    data: students,
+  });
+});
 
-//req, res, next ৩টা type এক সাথে define করার জন্য express এর built in RequestHandler type function আছে।
-// তাহলে আলাদা আলাদা করে parameter type দিতে হবে না।
-
-//catchAsync Higher Order function
-// এ function use করা হবে try-catch block repeatation কমানের জন্য
-
-const catchAsync = (fn: RequestHandler) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
-  };
-};
-
-const getSingleStudent = catchAsync(async (req, res, next) => {
+const getSingleStudent = catchAsync(async (req, res) => {
   // try {
   const { studentId } = req.params;
   const result = await StudentServices.getSingleStudentFromDB(studentId);
@@ -102,54 +82,41 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
-const deleteStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const { studentId } = req.params;
-    const result = await StudentServices.deleteStudentFromDB(studentId);
+const deleteStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    // res.status(201).json({
-    //   success: true,
-    //   message: 'Student has been Deleted',
-    //   data: result,
-    // });
+  // res.status(201).json({
+  //   success: true,
+  //   message: 'Student has been Deleted',
+  //   data: result,
+  // });
 
-    sendResponse(res, {
-      statusCode: status.CREATED,
-      success: true,
-      message: 'Student has been Deleted',
-      data: result,
-    });
-  } catch (error) {
-    //error send to globalErrorHandler
-    next(error);
-  }
-};
+  sendResponse(res, {
+    statusCode: status.CREATED,
+    success: true,
+    message: 'Student has been Deleted',
+    data: result,
+  });
+});
 
-const updateStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const studentId = req.params.studentId;
-    const updatedDoc = req.body;
+const updateStudent = catchAsync(async (req, res) => {
+  const studentId = req.params.studentId;
+  const updatedDoc = req.body;
 
-    const result = await StudentServices.updateStudentInDB(
-      studentId,
-      updatedDoc,
-    );
-    // res.status(201).json({
-    //   success: true,
-    //   message: 'Document Update Successfully',
-    //   data: result,
-    // });
-    sendResponse(res, {
-      statusCode: status.CREATED,
-      success: true,
-      message: 'Document Updated Successfully',
-      data: result,
-    });
-  } catch (error) {
-    //error send to globalErrorHandler
-    next(error);
-  }
-};
+  const result = await StudentServices.updateStudentInDB(studentId, updatedDoc);
+  // res.status(201).json({
+  //   success: true,
+  //   message: 'Document Update Successfully',
+  //   data: result,
+  // });
+  sendResponse(res, {
+    statusCode: status.CREATED,
+    success: true,
+    message: 'Document Updated Successfully',
+    data: result,
+  });
+});
 
 export const StudentControllers = {
   createStudent,
