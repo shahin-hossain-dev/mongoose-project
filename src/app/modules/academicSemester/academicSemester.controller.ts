@@ -1,10 +1,13 @@
 import status from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import { AcademicSemesterServices } from './academicSemester.services';
 
-const createAcademicSemester = catchAsync((req, res) => {
+const createAcademicSemester = catchAsync(async (req, res) => {
   //business logic/service logic here
-  const result = {};
+  const result = await AcademicSemesterServices.createAcademicSemesterIntoDB(
+    req.body,
+  );
 
   sendResponse(res, {
     statusCode: status.OK,
