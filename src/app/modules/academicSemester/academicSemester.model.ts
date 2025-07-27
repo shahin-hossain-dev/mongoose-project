@@ -36,6 +36,20 @@ const AcademicSemesterSchema = new Schema<TAcademicSemester>(
   { timestamps: true },
 );
 
+//mongoose built in pre-hook
+// pre hook er কাছে client থেকে send data এর access আছে, সে database এ query করে চেক করে data আছে কিনা।
+AcademicSemesterSchema.pre('save', async function (next) {
+  // যেহেতু এটা database এর সাথে সর্ম্পকিত তাই  database এ same data exist করে কিনা তা mongoose pre hook check করা safe and secure
+  const isSemesterExist = await AcademicSemester.findOne({
+    year: this.year,
+    name: this.name,
+  });
+  if (isSemesterExist) {
+    throw new Error('Semester already exist');
+  }
+  next();
+});
+
 export const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',
   AcademicSemesterSchema,
