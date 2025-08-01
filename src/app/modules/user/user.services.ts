@@ -1,5 +1,5 @@
-import { NextFunction } from 'express';
 import config from '../../config';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { TUser } from './user.interface';
@@ -16,6 +16,11 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     userData.password = password || (config.default_password as string);
 
     userData.role = 'student';
+
+    const generateStudentId = (payload: TAcademicSemester) => {
+      //id generated logic here
+    };
+
     // set manually generated
     userData.id = '2025370001';
 

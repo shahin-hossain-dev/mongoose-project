@@ -31,8 +31,33 @@ const getSingleAcademicSemesterFromDB = async (semesterId: string) => {
   return result;
 };
 
+const updateAcademicSemesterIntoDB = async (
+  payload: any,
+  semesterId: string,
+) => {
+  try {
+    const result = await AcademicSemester.findByIdAndUpdate(
+      semesterId,
+      payload,
+      {
+        new: true,
+      },
+    );
+
+    if (!result) {
+      throw new Error('Semester not found');
+    }
+
+    return result;
+  } catch (error: any) {
+    console.log(error.message);
+    throw Error(error.message);
+  }
+};
+
 export const AcademicSemesterServices = {
   createAcademicSemesterIntoDB,
   getAllAcademicSemesterFromDB,
   getSingleAcademicSemesterFromDB,
+  updateAcademicSemesterIntoDB,
 };

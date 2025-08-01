@@ -84,6 +84,7 @@ const createStudentValidationSchema = z.object({
       profileImg: z.string().optional(),
       // isActive: z.enum(['active', 'blocked']).default('active'),
       // isDeleted: z.boolean().default(false),
+      admissionSemester: z.string(),
     }),
   }),
 });

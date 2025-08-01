@@ -41,6 +41,7 @@ export type TStudent = {
   // isActive: 'active' | 'blocked';
   isDeleted: boolean;
   // fullName?: string;
+  admissionSemester: Types.ObjectId;
 };
 
 //* এখানে mongoose custom instance method type declare করা হয়েছে।

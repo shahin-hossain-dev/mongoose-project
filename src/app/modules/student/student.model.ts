@@ -138,6 +138,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: Boolean,
       default: false,
     },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
   },
   { toJSON: { virtuals: true } }, //active virtuals - toJSON হলো json এর মধ্যে set হবে।
 );

@@ -2,7 +2,8 @@ import status from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { AcademicSemesterServices } from './academicSemester.services';
-import { ObjectId } from 'mongoose';
+import { UpdateQuery } from 'mongoose';
+import { TAcademicSemester } from './academicSemester.interface';
 
 const createAcademicSemester = catchAsync(async (req, res) => {
   const result = await AcademicSemesterServices.createAcademicSemesterIntoDB(
@@ -42,8 +43,26 @@ const getSingleSemester = catchAsync(async (req, res) => {
   });
 });
 
+const updateAcademicSemester = catchAsync(async (req, res) => {
+  const updateDoc: UpdateQuery<TAcademicSemester> = req.body;
+  const semesterId = req.params.semesterId;
+
+  const result = await AcademicSemesterServices.updateAcademicSemesterIntoDB(
+    updateDoc,
+    semesterId,
+  );
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    success: true,
+    message: 'Academic semester updated Successfully',
+    data: result,
+  });
+});
+
 export const AcademicSemesterControllers = {
   createAcademicSemester,
   getAllAcademicSemester,
   getSingleSemester,
+  updateAcademicSemester,
 };
