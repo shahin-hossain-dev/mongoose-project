@@ -7,8 +7,6 @@ import {
   TUsername,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -69,7 +67,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     user: {
       type: Schema.Types.ObjectId, //Object id এর type, model এর মধ্যে define করতে হলে Schema.Type.ObjectId use করতে হয়।
       required: [true, 'userId is required'],
-      unique: true,
       ref: 'User', // connection with User Collection
     },
     name: {
